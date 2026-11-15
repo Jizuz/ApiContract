@@ -1,0 +1,3 @@
+# 包含不存在的类：按快速失败配置决定中断启动或告警跳过
+com.apicontract.testapi.UserContract
+com.not.exists.MissingContract

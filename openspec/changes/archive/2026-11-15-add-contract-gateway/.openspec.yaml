@@ -1,0 +1,3 @@
+schema: cust-schema
+created: 2026-11-14
+goal: 前端仅凭契约标识(mt)调用后端能力，实现契约发现、路由、泛化调用与治理

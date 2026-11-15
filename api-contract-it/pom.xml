@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.apicontract</groupId>
+    <artifactId>api-contract-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>api-contract-it</artifactId>
+  <name>ApiContract Integration Tests</name>
+  <description>任务25 集成测试套件：Testcontainers Nacos 全链路（发布→订阅→泛化调用）、
+    错误码端到端、降级矩阵、发布顺序破坏、多版本共存、单机调试模式。纯测试模块无产码。</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.apicontract</groupId>
+      <artifactId>api-contract-provider-starter</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.apicontract</groupId>
+      <artifactId>api-contract-gateway-starter</artifactId>
+    </dependency>
+    <!-- 官方 Nacos 适配（零编排代码端到端：内置编排经 adapter 完成发布与注册） -->
+    <dependency>
+      <groupId>com.apicontract</groupId>
+      <artifactId>api-contract-nacos-adapter</artifactId>
+    </dependency>
+    <!-- Provider 进程内 HTTP 应用（/_contract/rpc 泛化入口） -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <!-- Nacos 客户端：配置中心写读 + 服务注册发现（真实注册中心链路） -->
+    <dependency>
+      <groupId>com.alibaba.nacos</groupId>
+      <artifactId>nacos-client</artifactId>
+    </dependency>
+    <!-- 网关远程调用依赖（starter 内 optional，此处显式带入真实调用栈） -->
+    <dependency>
+      <groupId>io.projectreactor.netty</groupId>
+      <artifactId>reactor-netty-http</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>testcontainers</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <!-- 集成测试类以 IT 结尾（区别于单测），纳入常规 verify 构建 -->
+          <includes>
+            <include>**/*IT.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

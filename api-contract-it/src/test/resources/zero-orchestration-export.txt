@@ -1,0 +1,2 @@
+# 零编排代码端到端专用白名单（ZeroOrchestrationAccessIT，自定义 location 不影响其他 IT）
+com.apicontract.it.itapi.ItEcho

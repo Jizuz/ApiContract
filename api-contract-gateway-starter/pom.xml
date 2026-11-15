@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.apicontract</groupId>
+    <artifactId>api-contract-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>api-contract-gateway-starter</artifactId>
+  <name>ApiContract Gateway Starter</name>
+  <description>网关 Starter：契约索引订阅、mt 寻址、路由/限流/负载均衡、异步调用、
+    过滤器链自动装配。独立网关为默认部署形态；与 Provider Starter 依赖隔离，禁止互相依赖</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.apicontract</groupId>
+      <artifactId>api-contract-api</artifactId>
+    </dependency>
+    <!-- Spring Boot 自动装配能力由业务应用自带，这里仅参与编译（optional） -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- 异步客户端（Reactor Netty）为可选依赖：未引入时降级同步实现并告警；
+         版本由 Spring Boot BOM 统一管理，optional 不向业务应用传递 -->
+    <dependency>
+      <groupId>io.projectreactor.netty</groupId>
+      <artifactId>reactor-netty-http</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- 网关参数组装与响应解析（复用业务容器内 Jackson，不强制引入额外 JSON 库） -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <!-- MVC 泛化入口（可选：业务应用具备 Web 环境时才装配） -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- MockMvc standalone 需要 servlet-api（测试期） -->
+    <dependency>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

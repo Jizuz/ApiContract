@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.apicontract</groupId>
+  <artifactId>api-contract-parent</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+
+  <name>ApiContract Parent</name>
+  <description>ApiContract 契约网关父工程：聚合四件套模块（api / provider-starter / gateway-starter / bom），
+    统一 JDK17、编译参数与构建校验</description>
+
+  <modules>
+    <module>api-contract-bom</module>
+    <module>api-contract-api</module>
+    <module>api-contract-provider-starter</module>
+    <module>api-contract-nacos-adapter</module>
+    <module>api-contract-gateway-starter</module>
+    <module>api-contract-it</module>
+    <module>api-contract-samples</module>
+  </modules>
+
+  <properties>
+    <java.version>17</java.version>
+    <maven.compiler.release>17</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <spring-boot.version>3.2.5</spring-boot.version>
+    <nacos-client.version>2.2.4</nacos-client.version>
+    <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+    <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
+    <maven-enforcer-plugin.version>3.4.1</maven-enforcer-plugin.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <!-- Spring Boot 3 版本基线（业务应用统一管理注册中心客户端版本，框架不强绑定） -->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <!-- 四件套自身版本统一（网关与 Provider 必须同版本） -->
+      <dependency>
+        <groupId>com.apicontract</groupId>
+        <artifactId>api-contract-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.apicontract</groupId>
+        <artifactId>api-contract-provider-starter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.apicontract</groupId>
+        <artifactId>api-contract-gateway-starter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- 官方 Nacos 适配模块（可选件，samples/it 经 reactor 引用） -->
+      <dependency>
+        <groupId>com.apicontract</groupId>
+        <artifactId>api-contract-nacos-adapter</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <!-- 注册中心客户端版本基线（it 集成测试与 samples 示例共用；框架不强绑定；
+           nacos-adapter 同样经此管理，业务可经 property 或 dependencyManagement 覆盖） -->
+      <dependency>
+        <groupId>com.alibaba.nacos</groupId>
+        <artifactId>nacos-client</artifactId>
+        <version>${nacos-client.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven-compiler-plugin.version}</version>
+          <configuration>
+            <!-- 契约参数按名取值依赖参数名保留（规格：PARAM_NAME_MISSING 场景） -->
+            <parameters>true</parameters>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven-surefire-plugin.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <plugins>
+      <!-- 构建基线校验：JDK17 / Maven 版本约束（CR 阻断项：-parameters 与构建校验落入构建期） -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${maven-enforcer-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>enforce-build-baseline</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>[3.8,)</version>
+                  <message>ApiContract 需要 Maven 3.8+ 构建</message>
+                </requireMavenVersion>
+                <requireJavaVersion>
+                  <version>[17,)</version>
+                  <message>ApiContract 需要 JDK 17+（Spring Boot 3 基线）</message>
+                </requireJavaVersion>
+                <banDuplicatePomDependencyVersions/>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

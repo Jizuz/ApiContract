@@ -1,0 +1,2 @@
+# 编排器测试白名单（DefaultApiContractOrchestratorTest 专用，默认 location 加载）
+com.apicontract.testapi.EchoContract

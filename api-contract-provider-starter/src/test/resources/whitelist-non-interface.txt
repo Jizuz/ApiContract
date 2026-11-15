@@ -1,0 +1,3 @@
+# 包含非接口条目：整行忽略并告警（fail-fast 不影响该分支）
+com.apicontract.testapi.UserContract
+com.apicontract.testapi.NotAnInterface

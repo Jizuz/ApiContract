@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.apicontract</groupId>
+    <artifactId>api-contract-parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>api-contract-api</artifactId>
+  <name>ApiContract API</name>
+  <description>契约定义模块：契约接口、DTO、@Contract 注解、Protobuf schema。
+    零框架/零 RPC 依赖，网关与 Provider 共用同一版本（依赖隔离由 enforcer 校验）</description>
+
+  <build>
+    <plugins>
+      <!-- 依赖隔离（CR 阻断项）：api 模块为零依赖契约定义模块，禁止引入框架/RPC/序列化依赖 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${maven-enforcer-plugin.version}</version>
+        <executions>
+          <execution>
+            <id>enforce-api-dependency-isolation</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <bannedDependencies>
+                  <excludes>
+                    <exclude>org.springframework:*</exclude>
+                    <exclude>org.springframework.boot:*</exclude>
+                    <exclude>com.alibaba.*:*</exclude>
+                    <exclude>io.projectreactor:*</exclude>
+                    <exclude>com.fasterxml.jackson.*:*</exclude>
+                    <exclude>org.apache.dubbo:*</exclude>
+                    <exclude>net.bytebuddy:*</exclude>
+                  </excludes>
+                  <message>api-contract-api 为零依赖契约定义模块，禁止引入框架/RPC/序列化依赖（依赖隔离）</message>
+                </bannedDependencies>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- 契约定义模块禁止任何 compile 期第三方依赖（由 enforcer bannedDependencies 强制）；
+         例外：protobuf-java 为 Protobuf schema 分发与编解码运行时（spec contract-serialization
+         二进制形态，schema 随契约定义模块同版本分发） -->
+    <dependency>
+      <groupId>com.google.protobuf</groupId>
+      <artifactId>protobuf-java</artifactId>
+      <version>3.25.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
